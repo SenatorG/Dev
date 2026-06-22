@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adaptive Learning Coach — Executive Summary v2.7</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 820px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    color: #1a1a1a;
+    background: #fafafa;
+    line-height: 1.6;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 2rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+    color: #1e3a5f;
+    border-bottom: 2px solid #1e3a5f;
+    padding-bottom: 0.3rem;
+    margin-top: 2rem;
+  }
+  p, li {
+    font-size: 0.95rem;
+  }
+  ul {
+    padding-left: 1.25rem;
+  }
+  li {
+    margin-bottom: 0.4rem;
+  }
+  .card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .scenario-box {
+    background: #f3f6f9;
+    border-left: 4px solid #1e3a5f;
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+  }
+  .scenario-box h3 {
+    font-size: 0.9rem;
+    margin: 0 0 0.4rem 0;
+    color: #1e3a5f;
+  }
+  .scenario-box p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: #444;
+  }
+  .rubric-table, .budget-table, .changes-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  .rubric-table th, .rubric-table td,
+  .budget-table th, .budget-table td,
+  .changes-table th, .changes-table td {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .rubric-table th, .budget-table th, .changes-table th {
+    background: #1e3a5f;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .rubric-table tr:last-child td,
+  .budget-table tr:last-child td,
+  .changes-table tr:last-child td {
+    border-bottom: none;
+  }
+  .budget-table td:nth-child(2),
+  .budget-table td:nth-child(3),
+  .budget-table td:nth-child(4) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .budget-table th:nth-child(2),
+  .budget-table th:nth-child(3),
+  .budget-table th:nth-child(4) {
+    text-align: right;
+  }
+  .level-badge {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    color: #fff;
+  }
+  .l101 { background: #6b7280; }
+  .l201 { background: #2563eb; }
+  .l301 { background: #059669; }
+  .l401 { background: #7c3aed; }
+  .change-tag {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    color: #fff;
+    margin-right: 0.3rem;
+  }
+  .tag-resilience { background: #059669; }
+  .tag-ux { background: #2563eb; }
+  .tag-fix { background: #dc2626; }
+  .tag-efficiency { background: #d97706; }
+  .tag-resolved { background: #7c3aed; }
+  .footer {
+    margin-top: 2.5rem;
+    font-size: 0.8rem;
+    color: #999;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Adaptive Learning Coach</h1>
+<p class="subtitle">Myhill AI Agent &mdash; Executive Summary &bull; v2.7 &bull; 2026-03-27</p>
+
+<div class="card">
+<h2>Purpose</h2>
+<p>The Adaptive Learning Coach (ALC) is a Glean AI agent that evaluates Dell technical presales specialists against a structured competency rubric spanning four proficiency levels (101&ndash;401). It ingests real-world artifacts&mdash;customer call transcripts, internal enablement session recordings, and sales collateral&mdash;and produces a rubric-anchored evaluation with scored competencies, behavioral evidence, and a prioritized improvement plan.</p>
+<p>The agent acts as an <strong>Executive Coaching Assessor for Technical Excellence</strong>: a Senior Sales Coach and Executive Buyer Proxy that grades observable behavior, not self-reported skill. Its purpose is to create consistent, candid, and actionable coaching at scale without requiring a human evaluator for every interaction.</p>
+</div>
+
+<div class="card">
+<h2>Problem It Solves</h2>
+<ul>
+  <li><strong>Inconsistent coaching quality</strong> &mdash; Presales specialists receive sporadic, subjective feedback that varies by manager. The ALC applies the same rubric to every evaluation.</li>
+  <li><strong>No scalable self-assessment</strong> &mdash; Specialists have no way to independently evaluate a call or asset against a shared standard. The ALC lets them submit any artifact and get immediate, structured feedback.</li>
+  <li><strong>Gap between training and execution</strong> &mdash; Enablement sessions teach concepts, but there is no systematic way to measure whether those concepts appear in customer-facing work. The ALC closes the loop.</li>
+  <li><strong>Stale collateral usage</strong> &mdash; Specialists may rely on outdated or misaligned assets. The ALC evaluates collateral fitness for purpose and identifies gaps.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Supported Scenarios</h2>
+<p>The agent auto-detects the input type and routes to the appropriate evaluation framework:</p>
+<div class="scenario-grid">
+  <div class="scenario-box">
+    <h3>Customer Conversation</h3>
+    <p>Transcripts, call recordings, or meeting notes from customer-facing interactions. Evaluates discovery quality, competitive fluency, demo effectiveness, and champion enablement across a 6-section report.</p>
+  </div>
+  <div class="scenario-box">
+    <h3>Enablement Session</h3>
+    <p>Internal training or enablement session transcripts. Evaluates whether the presenter <em>teaches</em> the behavior (not just describes it), plus a &ldquo;Monday Morning Test&rdquo; for behavioral stickiness. 6-section report.</p>
+  </div>
+  <div class="scenario-box">
+    <h3>Collateral</h3>
+    <p>Decks, proposals, blueprints, POV/POC plans, battlecards, and other sales assets. Focused 3-section assessment: classification, strengths &amp; gaps, and best use in customer conversations.</p>
+  </div>
+</div>
+</div>
+
+<div class="card">
+<h2>Competency Rubric</h2>
+<table class="rubric-table">
+  <thead>
+    <tr>
+      <th>Level</th>
+      <th>Label</th>
+      <th>What It Means</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="level-badge l101">101</span></td>
+      <td>Initial Presentation</td>
+      <td>Can deliver the core deck with poise, tie it to ISG strategy, and earn a second meeting. Does not win complex deals.</td>
+    </tr>
+    <tr>
+      <td><span class="level-badge l201">201</span></td>
+      <td>Value Discovery</td>
+      <td>Runs structured discovery, builds a problem statement and value map, ties Dell value to explicit design criteria with a basic demo or lab.</td>
+    </tr>
+    <tr>
+      <td><span class="level-badge l301">301</span></td>
+      <td>Proof of Value</td>
+      <td>Translates alignment into evidence: workshops, POCs via CSC Studios, competitive fluency, and presumptive technical commitment backed by artifacts.</td>
+    </tr>
+    <tr>
+      <td><span class="level-badge l401">401</span></td>
+      <td>Portfolio Authority</td>
+      <td>Operates as a design authority: shapes evaluation rubrics, runs executive sessions, pre-empts competitors at the architecture level, and teaches others at scale.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>Evaluation Competencies</h2>
+<p>Each transcript or asset is scored across three competency domains (tailored per scenario):</p>
+<ul>
+  <li><strong>A &mdash; Customer Conversations:</strong> Strategy &amp; Portfolio Narrative (A1), Discovery, Synthesis &amp; Meeting Hygiene (A2), Competitive Fluency &amp; Objection Handling (A3), Demo/POC &amp; Technical Commitment (A4).</li>
+  <li><strong>B &mdash; Champion Enablement / Session Delivery:</strong> How well the specialist equips champions to re-tell the story internally, or (for enablement) how well the session scales capability and models consultative behaviors.</li>
+  <li><strong>C &mdash; Collateral Usage / Teaching:</strong> Appropriateness of customer-facing, competitive, and evaluation artifacts deployed or taught, given the sales stage.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Key Output Sections</h2>
+<ul>
+  <li><strong>Rubric Scores</strong> &mdash; Competency-level table with 101&ndash;401 ratings and evidence-based rationale.</li>
+  <li><strong>Key Moments / Teaching Effectiveness</strong> &mdash; 3&ndash;5 pivotal moments with commentary on what happened and what 301+ behavior looks like.</li>
+  <li><strong>Missed Opportunities / Monday Morning Test</strong> &mdash; Where value was left on the table, with specific alternative actions or language.</li>
+  <li><strong>Overall Assessment</strong> &mdash; Candid summary of where the specialist is versus where they think they are.</li>
+  <li><strong>Flow &amp; Quality</strong> &mdash; Analysis of discussion/session mechanics: pacing, transitions, momentum. Each recommendation tied to a transcript moment and rubric competency.</li>
+  <li><strong>Top 3 Priorities</strong> &mdash; Concrete behavior changes with specific actions and behavioral scripts for the next 30&ndash;60 days.</li>
+  <li><strong>Resource Bibliography</strong> &mdash; Curated Chicago-style bibliography from Brave and Company search, tied to evaluation gaps, with staleness labels on resources older than 12 months.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Design Principles</h2>
+<ul>
+  <li><strong>Rubric-driven, not opinion-driven.</strong> Every score anchors to the 101&ndash;401 rubric with direct evidence from the submitted material.</li>
+  <li><strong>Evidence or N/A.</strong> If there is no observable evidence for a competency, it is marked N/A&mdash;not guessed or inflated. Anti-inflation rules are enforced in every evaluation step.</li>
+  <li><strong>Direct and unapologetic.</strong> The agent does not soften feedback. If behavior is 101 with occasional flashes of 201, the score is 101.</li>
+  <li><strong>Actionable, not abstract.</strong> Every gap comes with a specific behavior change, script, or exercise&mdash;not generic advice.</li>
+  <li><strong>Context-resilient.</strong> Critical rules (persona, evidence discipline, scoring anchors) are redundantly embedded in every evaluation step to survive Glean&rsquo;s context propagation limitations.</li>
+  <li><strong>Built for Glean constraints.</strong> Single-step scenario routing (no branching), all content within the 8,000-character per-step limit, Read Document steps carry no instruction text.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Architecture</h2>
+<p>The agent runs as an 8-step Glean flow:</p>
+<ul>
+  <li><strong>Steps 0&ndash;2:</strong> Document ingestion (Step 0 acts as the activation trigger), URL/file link retrieval, and reference rubric loading from SharePoint.</li>
+  <li><strong>Step 3:</strong> Scenario detection, persona activation, sales stage identification, rubric precedence rules, and evidence grounding rules.</li>
+  <li><strong>Steps 4&ndash;6:</strong> Three scenario-specific Respond steps with hard guard clauses&mdash;only the matching scenario produces a full evaluation; non-matching steps output a directional routing message.</li>
+  <li><strong>Step 7:</strong> Plan &amp; Execute step with context recovery that reads evaluation outputs directly, searches for resources tied to identified gaps, and produces a Chicago-style bibliography.</li>
+</ul>
+<p>This architecture avoids the branching bug discovered in prior Glean agents (Myhill Testing Agent v1), where Glean re-enters the flow from the top on each user message and branch conditions break on user input that doesn&rsquo;t match any condition.</p>
+</div>
+
+<div class="card">
+<h2>Character Budget (v2.7)</h2>
+<table class="budget-table">
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Chars</th>
+      <th>Limit</th>
+      <th>Headroom</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Step 0 &mdash; Read Document (User Input)</td>
+      <td>0</td>
+      <td>8,000</td>
+      <td>8,000</td>
+    </tr>
+    <tr>
+      <td>Step 1 &mdash; Think (Document Intake)</td>
+      <td>307</td>
+      <td>8,000</td>
+      <td>7,693</td>
+    </tr>
+    <tr>
+      <td>Step 2 &mdash; Read Document (Reference Rubric)</td>
+      <td>206</td>
+      <td>8,000</td>
+      <td>7,794</td>
+    </tr>
+    <tr>
+      <td>Step 3 &mdash; Think (Persona + Scenario Detection)</td>
+      <td>6,022</td>
+      <td>8,000</td>
+      <td>1,978</td>
+    </tr>
+    <tr>
+      <td>Step 4 &mdash; Respond (Customer Conversation)</td>
+      <td>6,181</td>
+      <td>8,000</td>
+      <td>1,819</td>
+    </tr>
+    <tr>
+      <td>Step 5 &mdash; Respond (Enablement Session)</td>
+      <td>6,155</td>
+      <td>8,000</td>
+      <td>1,845</td>
+    </tr>
+    <tr>
+      <td>Step 6 &mdash; Respond (Collateral)</td>
+      <td>2,741</td>
+      <td>8,000</td>
+      <td>5,259</td>
+    </tr>
+    <tr>
+      <td>Step 7 &mdash; Plan &amp; Execute (Resource Bibliography)</td>
+      <td>4,885</td>
+      <td>8,000</td>
+      <td>3,115</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>Target Users</h2>
+<ul>
+  <li><strong>Presales specialists</strong> seeking self-assessment against the competency rubric after customer calls or enablement sessions.</li>
+  <li><strong>Sales managers and mentors</strong> who want a consistent, evidence-based evaluation to anchor coaching conversations.</li>
+  <li><strong>Enablement leaders</strong> evaluating the effectiveness of training sessions and collateral assets at driving behavioral change.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>What Changed in v2.7 (from v2.6)</h2>
+<table class="changes-table">
+  <thead>
+    <tr>
+      <th>Change</th>
+      <th>Steps</th>
+      <th>Impact</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="change-tag tag-efficiency">Efficiency</span> Merged EVALUATION METHOD + OUTPUT FORMAT into single EVALUATION &amp; OUTPUT section</td>
+      <td>4, 5</td>
+      <td>Recovered ~1,500 chars headroom per step (was ~500, now ~1,800). Eliminates duplicated instructions without removing any evaluation criteria or output sections.</td>
+    </tr>
+    <tr>
+      <td><span class="change-tag tag-resilience">Resilience</span> Context recovery block for resource bibliography</td>
+      <td>7</td>
+      <td>Step 7 now reads evaluation results from user-visible Respond outputs instead of relying on Think-step context, which can silently drop in Glean. Includes transparent fallback if all context is lost.</td>
+    </tr>
+    <tr>
+      <td><span class="change-tag tag-ux">UX</span> Guard clause output improved</td>
+      <td>4, 5, 6</td>
+      <td>Non-active steps now output &ldquo;[Scenario] detected &mdash; evaluation produced in the applicable section&rdquo; instead of &ldquo;N/A,&rdquo; reducing user confusion.</td>
+    </tr>
+    <tr>
+      <td><span class="change-tag tag-fix">Fix</span> Removed broken export offer</td>
+      <td>4, 5, 6</td>
+      <td>Eliminated &ldquo;would you like an exportable document&rdquo; prompt that could not be fulfilled due to Glean&rsquo;s flow re-entry behavior.</td>
+    </tr>
+    <tr>
+      <td><span class="change-tag tag-fix">Fix</span> Guard rail step reference corrected</td>
+      <td>3</td>
+      <td>Empty-document guard now correctly references Steps 0 and 1 (user document intake) instead of &ldquo;the previous step&rdquo; (which was the rubric loader).</td>
+    </tr>
+    <tr>
+      <td><span class="change-tag tag-resilience">Resilience</span> Rubric precedence rule</td>
+      <td>3</td>
+      <td>SharePoint rubric (Step 2) is now the authoritative source; inline definitions serve as fallback only. Resolves dual-source conflict.</td>
+    </tr>
+    <tr>
+      <td><span class="change-tag tag-resilience">Resilience</span> Evidence rule anchors in every Respond step</td>
+      <td>4, 5, 6</td>
+      <td>Anti-inflation rules (&ldquo;score only what is observable,&rdquo; &ldquo;101 with flashes of 201 is 101&rdquo;) now enforced redundantly in each evaluation step, surviving Think-step context loss.</td>
+    </tr>
+    <tr>
+      <td><span class="change-tag tag-resilience">Resilience</span> Persona anchors in every Respond step</td>
+      <td>4, 5, 6</td>
+      <td>Core evaluator identity (&ldquo;Executive Coaching Assessor &mdash; Senior Sales Coach and Executive Buyer Proxy&rdquo;) embedded in each step to maintain tone and scoring frame if Step 3 drops from context.</td>
+    </tr>
+    <tr>
+      <td><span class="change-tag tag-resolved">Resolved</span> Chat Message Trigger question closed</td>
+      <td>0</td>
+      <td>Confirmed: Read Document step acts as the activation trigger when a user adds collateral and clicks continue. No separate trigger required. Deferred since v2.1.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p class="footer">Adaptive Learning Coach v2.7 &bull; Myhill AI Agent &bull; Built for Glean Agent Builder</p>
+
+</body>
+</html>
