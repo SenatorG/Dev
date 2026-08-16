@@ -1,0 +1,9 @@
+# Local IDE / agent state
+.codeium/
+.devin-shared/
+.devin/
+.local/
+.ssh/
+.vscode-shared/
+.vscode/
+.windsurf/
