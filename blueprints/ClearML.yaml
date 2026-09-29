@@ -1,0 +1,238 @@
+tosca_definitions_version: dell_1_1
+
+description: >
+  ClearML Day-2 Blueprint: Configure resource pools, profiles, and policies via
+  the ClearML API to enable GPU visibility/accounting. Runs the configuration as
+  an in-cluster Kubernetes Job (deployed with the target cluster's kubeconfig),
+  mirroring the ClearML agent component's parse_k8s_secret pattern.
+
+imports:
+  - dell/types/types.yaml
+  - plugin:kubernetes-plugin?version= >=3.4.0.0,<4.0.0.0
+
+input_groups:
+  k8s_target_cluster:
+    display_label: Target Kubernetes Cluster
+    collapsible: true
+    index: 0
+    inputs:
+      - k8s_config_secret
+      - job_namespace
+      - job_image
+  clearml_config:
+    display_label: ClearML Configuration
+    collapsible: true
+    index: 1
+    inputs:
+      - clearml_api_url
+      - clearml_api_credentials_secret
+      - enable_policy_manager
+  resource_config:
+    display_label: Resource Configuration
+    collapsible: true
+    index: 2
+    inputs:
+      - resource_pools
+      - resource_profiles
+      - resource_policies
+  options:
+    display_label: Options
+    collapsible: true
+    index: 3
+    inputs:
+      - dry_run
+      - allow_overwrite
+
+inputs:
+
+  k8s_config_secret:
+    display_label: Kubernetes Configuration Secret
+    type: secret_key
+    hidden: false
+    allow_update: false
+    description: >
+      Name of the DAP secret (k8s type) holding the kubeconfig for the target
+      cluster. Parsed by parse_k8s_secret.py into the kubernetes plugin client
+      config (host/port/token/ssl_ca_cert), exactly as the ClearML agent does.
+    display:
+      group: k8s_target_cluster
+      index: 0
+
+  job_namespace:
+    display_label: Job Namespace
+    type: string
+    hidden: false
+    allow_update: false
+    description: Namespace to run the Day-2 configuration Job in
+    constraints:
+      - pattern: "^[a-z0-9-]+$"
+        error_message: Must be a valid Kubernetes namespace
+    display:
+      group: k8s_target_cluster
+      index: 1
+
+  job_image:
+    display_label: Job Image
+    type: string
+    hidden: false
+    allow_update: false
+    description: Container image for the Job (must provide python3 or apk/apt to add it)
+    constraints:
+      - pattern: "^[a-zA-Z0-9].*"
+        error_message: Must be a valid container image reference
+    display:
+      group: k8s_target_cluster
+      index: 2
+
+  clearml_api_url:
+    display_label: ClearML API URL
+    type: string
+    hidden: false
+    allow_update: false
+    description: ClearML API server URL (reachable from inside the cluster)
+    constraints:
+      - pattern: "^https?://.*"
+        error_message: Must be a valid HTTP/HTTPS URL
+    display:
+      group: clearml_config
+      index: 0
+
+  clearml_api_credentials_secret:
+    display_label: ClearML API Credentials Secret
+    type: secret_key
+    hidden: false
+    allow_update: false
+    description: DAP secret (basic_auth_credentials) with the ClearML admin username/password
+    # NOTE: orchestrator secret type is basic_auth_credentials (verified: clearml_portal_admin).
+    # The constraint MUST match it or create_deployment_environment fails. The ai-bp-linter
+    # does not list basic_auth_credentials, so it emits a false-positive warning here.
+    constraints:
+      - type: basic_auth_credentials
+        error_message: Must reference a basic_auth_credentials secret (username/password)
+    display:
+      group: clearml_config
+      index: 1
+
+  enable_policy_manager:
+    display_label: Enable Policy Manager
+    type: boolean
+    hidden: false
+    allow_update: false
+    description: Enable the ClearML policy manager
+    constraints:
+      - valid_values: [true, false]
+        error_message: Must be true or false
+    display:
+      group: clearml_config
+      index: 2
+
+  resource_pools:
+    display_label: Resource Pools
+    type: list
+    item_type: string
+    hidden: false
+    allow_update: false
+    description: Resource pool definitions (list of objects)
+    constraints:
+      - min_length: 0
+        error_message: Must be a list
+    display:
+      group: resource_config
+      index: 0
+
+  resource_profiles:
+    display_label: Resource Profiles
+    type: list
+    item_type: string
+    hidden: false
+    allow_update: false
+    description: Resource profile definitions (list of objects)
+    constraints:
+      - min_length: 0
+        error_message: Must be a list
+    display:
+      group: resource_config
+      index: 1
+
+  resource_policies:
+    display_label: Resource Policies
+    type: list
+    item_type: string
+    hidden: false
+    allow_update: false
+    description: Resource policy definitions (list of objects)
+    constraints:
+      - min_length: 0
+        error_message: Must be a list
+    display:
+      group: resource_config
+      index: 2
+
+  dry_run:
+    display_label: Dry Run
+    type: boolean
+    hidden: false
+    allow_update: false
+    description: If true, only authenticate and report (no changes)
+    constraints:
+      - valid_values: [true, false]
+        error_message: Must be true or false
+    display:
+      group: options
+      index: 0
+
+  allow_overwrite:
+    display_label: Allow Overwrite
+    type: boolean
+    hidden: false
+    allow_update: false
+    description: >
+      If false (default), abort when ClearML already has pools/profiles configured
+      (set_resource_configuration is a full overwrite). Set true to replace them.
+    constraints:
+      - valid_values: [true, false]
+        error_message: Must be true or false
+    display:
+      group: options
+      index: 1
+
+node_templates:
+
+  fetch_k8s_config_secret:
+    type: dell.nodes.Root
+    interfaces:
+      dell.interfaces.lifecycle:
+        precreate:
+          implementation: scripts/parse_k8s_secret.py
+          executor: central_deployment_agent
+          inputs:
+            k8s_config_secret: { get_input: k8s_config_secret }
+
+  day2_job:
+    type: dell.nodes.kubernetes.resources.FileDefinedResource
+    properties:
+      client_config: { get_attribute: [fetch_k8s_config_secret, k8s_client_config] }
+      file:
+        resource_path: manifests/day2.yaml
+        template_variables:
+          NAMESPACE: { get_input: job_namespace }
+          JOB_IMAGE: { get_input: job_image }
+          CLEARML_API_URL: { get_input: clearml_api_url }
+          CLEARML_USERNAME: { get_secret: [{ get_input: clearml_api_credentials_secret }, username] }
+          CLEARML_PASSWORD: { get_secret: [{ get_input: clearml_api_credentials_secret }, password] }
+          ENABLE_POLICY_MANAGER: { get_input: enable_policy_manager }
+          RESOURCE_POOLS: { get_input: resource_pools }
+          RESOURCE_PROFILES: { get_input: resource_profiles }
+          RESOURCE_POLICIES: { get_input: resource_policies }
+          DRY_RUN: { get_input: dry_run }
+          ALLOW_OVERWRITE: { get_input: allow_overwrite }
+      options:
+        namespace: { get_input: job_namespace }
+    relationships:
+      - type: dell.relationships.depends_on
+        target: fetch_k8s_config_secret
+
+labels:
+  csys-obj-type:
+    values:
+      - service
